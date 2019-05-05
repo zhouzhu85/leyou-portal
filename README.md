@@ -1,8 +1,8 @@
-安装live-server
+全局安装live-server
 ```
 npm install -g live-server
 ```
 启动
 ```
-live-server
+live-server --port=9002
 ```
