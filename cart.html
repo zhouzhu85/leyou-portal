@@ -358,13 +358,14 @@
                 })
             },
             increment(c) {
-                c.num++;
                 this.isLogin().then(() => {
                     // 已登录
                     ly.http.put("/cart", ly.stringify({
                         id: c.skuId,
                         num: c.num
-                    })).catch(() => {
+                    })).then(()=>{
+                        c.num++;
+                    }).catch(() => {
                         alert("服务器忙");
                     })
                 }).catch(() => {
@@ -374,13 +375,14 @@
             },
             decrement(c) {
                 if (c.num <= 1) return;
-                c.num--;
                 this.isLogin().then(() => {
                     // 已登录
                     ly.http.put("/cart", ly.stringify({
                         id: c.skuId,
                         num: c.num
-                    })).catch(() => {
+                    })).then(()=>{
+                        c.num--;
+                    }).catch(() => {
                         alert("服务器忙");
                     })
                 }).catch(() => {
@@ -390,10 +392,11 @@
             },
             deleteCart(i) {
                 const id = this.carts[i].skuId;
-                this.carts.splice(i, 1);
                 this.isLogin().then(() => {
                     // 已登录
-                    ly.http.delete("/cart/" + id).catch(() => {
+                    ly.http.delete("/cart/" + id).then(()=>{
+                        this.carts.splice(i, 1);
+                    }).catch(() => {
                         alert("服务器忙");
                     })
                 }).catch(() => {
