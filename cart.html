@@ -332,21 +332,20 @@
                 this.isLogin().then(() => {
                     // 判断本地未登录购物车是否存在，如果存在，发到后台，添加到redis，删除本地购物车
                     this.carts = ly.store.get("carts");
+                    console.log(this.carts)
                     if (this.carts) {
-                        this.carts.forEach(cart =>  ly.http.post("/cart",cart))
+                        ly.http.post("/cart/more",JSON.stringify(this.carts)).then(()=>{
+                            //清空LocalStorage
+                            ly.store.del("carts");
+                            // 已登录,加载购物车
+                            this.loadCartList();
+                        }).catch(()=>{
+
+                        })
+                    }else {
+                        // 已登录,加载购物车
+                        this.loadCartList();
                     }
-                    //清空LocalStorage
-                    ly.store.del("carts");
-                    // 已登录
-                    ly.http.get("/cart/list").then(resp => {
-                        this.loadSku(resp.data).then(() => {
-                            this.carts = resp.data;
-                            this.selectedCarts = this.carts;
-                        });
-                    }).catch(() => {
-                        // 提示
-                        alert("你的购物车是空的，赶紧去买点东西吧！");
-                    })
                 }).catch(() => {
                     // 未登录
                     console.log("未登录")
@@ -355,6 +354,17 @@
                         this.carts = carts;
                         this.selectedCarts = this.carts;
                     });
+                })
+            },
+            loadCartList(){
+                ly.http.get("/cart/list").then(resp => {
+                    this.loadSku(resp.data).then(() => {
+                        this.carts = resp.data;
+                        this.selectedCarts = this.carts;
+                    });
+                }).catch(() => {
+                    // 提示
+                    alert("你的购物车是空的，赶紧去买点东西吧！");
                 })
             },
             increment(c) {
