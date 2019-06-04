@@ -546,6 +546,21 @@ const ly = leyou = {
             return localStorage.removeItem(key);
         }
     },
+    verifyUser(){
+        return new Promise((resolve, reject) => {
+            ly.http.get("/auth/verify").then(resp => {
+                resolve(resp);
+            }).catch(error => {
+                if (this.user) {
+                    // 重新登录
+                    console.log("未登录或已过期");
+                    window.location.href = "http://www.smilepet.ml/login.html?returnUrl=" + window.location.href;
+                }
+                reject(error);
+            })
+        })
+        return ly.http.get("/auth/verify");
+    },
     /**
      * 将整数价格变为小数
      * @param val
