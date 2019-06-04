@@ -334,7 +334,7 @@
                     this.carts = ly.store.get("carts");
                     console.log(this.carts)
                     if (this.carts) {
-                        ly.http.post("/cart/more",JSON.stringify(this.carts)).then(()=>{
+                        ly.http.post("/cart/more",this.carts).then(()=>{
                             //清空LocalStorage
                             ly.store.del("carts");
                             // 已登录,加载购物车
@@ -369,13 +369,13 @@
             },
             increment(c) {
                 this.isLogin().then(() => {
+                    c.num++;
                     // 已登录
                     ly.http.put("/cart", ly.stringify({
                         id: c.skuId,
                         num: c.num
-                    })).then(()=>{
-                        c.num++;
-                    }).catch(() => {
+                    })).catch(() => {
+                        c.num--
                         alert("服务器忙");
                     })
                 }).catch(() => {
@@ -386,13 +386,13 @@
             decrement(c) {
                 if (c.num <= 1) return;
                 this.isLogin().then(() => {
+                    c.num--;
                     // 已登录
                     ly.http.put("/cart", ly.stringify({
                         id: c.skuId,
                         num: c.num
-                    })).then(()=>{
-                        c.num--;
-                    }).catch(() => {
+                    })).catch(() => {
+                        c.num++;
                         alert("服务器忙");
                     })
                 }).catch(() => {
